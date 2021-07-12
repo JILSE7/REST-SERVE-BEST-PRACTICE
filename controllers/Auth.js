@@ -5,6 +5,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 //Generador de tokens
 const tokenGenerate = require('../helpers/tokenGenerate');
+const { googleTokenVerify } = require('../helpers/googleToken-verify');
 
 //Login de usuario
 const login = async(req, res = response) => {
@@ -50,8 +51,58 @@ const login = async(req, res = response) => {
 }
 
 
+const googleSI = async (req, res= response) => {
+    
+    const id_token = req.header('x-token')
+
+    try {
+        const payload= await googleTokenVerify(id_token);
+        const {name, picture , email}  = payload;
+
+        let user = await User.findOne({email});
+
+        if(!user){
+            //si no existe en db lo creamos
+            const data = {
+                name,
+                email,
+                password : ':p',
+                img : picture ,
+                google: true
+            }
+            user = new User(data);
+            await user.save();
+        }
+
+        if(!user.state){ //si esl usuario esta "borrado" => state false
+            return res.status(401).json({
+                ok: false,
+                msg: 'Hable con el administrador, Usuario bloqueado'
+            })
+        }
+
+          //Generar el JWT
+          const token = await tokenGenerate(user._id);
+     
+        res.json({
+            ok: true,
+            msg: 'Todo chidito',
+            token
+        })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({
+            ok:false,
+            msg: 'Token no reconocido por google'
+        })
+    }
+}
+
+
 
 
 module.exports  = {
-    login
+    login,
+    googleSI
 }

@@ -3,10 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" type="image/png" href="./google.png">
+    <link rel="stylesheet" href="./style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Denegado</title>
+    <meta name="google-signin-client_id" content="59458745677-pfoi0oh280ghdhvfopfru0nmknd9gf8m.apps.googleusercontent.com">
+    <title>Google - Iniciar Sesion</title>
 </head>
 <body>
-        <h1>nooooooooo</h1>
-</body>
-</html>
+    <div class="container">
+        <header class="header">
+            <img src="./header.png" alt="header" class="img">
+        </header>
+        <hr>
+        <div class="box">
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            <a href="#" onclick="signOut();">Sign out</a>
+        </div>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+        <script>
+            
+            async function onSignIn(googleUser) {
+                try {
+                    var profile = googleUser.getBasicProfile();
+                    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+                    console.log('Name: ' + profile.getName());
+                    console.log('Image URL: ' + profile.getImageUrl());
+                    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+                    var id_token = googleUser.getAuthResponse().id_token;
+                     const data = await (await sendToken(id_token)).json();
+                    console.log(data);
+                    
+                    
+                } catch (error) {
+                    console.log(error);    
+                }
+                
+                }
+
+              function sendToken (token){
+                    const url = (window.location.hostname.includes('localhost')) ?  'http://localhost:8080/api/auth/google' : 'https://rest-server-nodejs-said.herokuapp.com/api/auth/google'
+                    return fetch(url, {
+                            method:'POST',
+                            headers: {
+                                'Content-type' : 'application/json',
+                                'x-token' : token
+                            },
+                            body: JSON.stringify({id_token: token})
+                        })
+            };
+
+
+            function signOut() {
+                var auth2 = gapi.auth2.getAuthInstance();
+                auth2.signOut().then(function () {
+                console.log('User signed out.');
+                });
+            }
+        </script>
+    </body>
+</div>
+    </html>

@@ -87,7 +87,8 @@ const googleSI = async (req, res= response) => {
         res.json({
             ok: true,
             msg: 'Todo chidito',
-            token
+            token,
+            user
         })
         
     } catch (error) {

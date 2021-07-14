@@ -1,7 +1,7 @@
 //Manteniendo el intelligence
 const {response} = require('express');
 //Instancia del modelo
-const User = require('../models/User');
+const {User} = require('../models/');
 //Bcryptjs
 const bcrypt = require('bcryptjs');
 

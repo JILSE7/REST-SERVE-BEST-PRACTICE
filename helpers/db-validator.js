@@ -1,3 +1,4 @@
+const { Category, Product } = require('../models');
 const Role = require('../models/role');
 const User = require('../models/User');
 
@@ -20,11 +21,41 @@ const userVerify = async (id) => {
     if(!userExist){
       throw new Error(`El usuario con id ${id} no esta registadro en la base de datos`)
     }
-}    
+};
+
+
+const categoryVerify = async(id) => {
+    const categoryExist =await Category.findById(id);
+
+    if(!categoryExist){
+        throw new Error(`La categoria con id ${id} no esta registrada en la base de datos`)
+    }
+};
+
+
+const productVerify = async(name) => {
+    const productExist = await Product.findOne({name : name[0].toUpperCase()+name.substring(1)});
+
+    if(productExist){
+        throw new Error(`Ya existe un producto con este nombre ${name}`)
+    }
+}
+
+
+const productNoExist = async(name) => {
+    const productExist = await Product.findOne({name : name[0].toUpperCase()+name.substring(1)});
+
+    if(!productExist){
+        throw new Error(`No existe ningun producto con este nombre ${name}`)
+    }
+}
 
 
 module.exports = {
     roleValidate,
     emailVerify,
-    userVerify
+    userVerify,
+    categoryVerify,
+    productVerify,
+    productNoExist
 }

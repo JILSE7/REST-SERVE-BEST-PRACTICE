@@ -39,6 +39,7 @@ const validateToken = async(req, res = response, next) => {
             });
         }
 
+        console.log('token validation',userAuntenticated, uid);
         req.userAuntenticated = userAuntenticated;
         
         next();

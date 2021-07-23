@@ -79,10 +79,11 @@ const searchCategory = async(search=  '', res = response ) => {
 const searchProduct = async(search=  '', res = response ) => {
 
     const isMongoId = ObjectId.isValid(search); // si es un id de mongo regresa un true
-
+    console.log(search);
     try {
         if( isMongoId){
-            const product = await Product.findById(search);
+            const product = await Product.findById(search)
+                                                                        
             return res.json({
                 ok: true,
                 results: (product) ?  [product] : []
@@ -96,6 +97,7 @@ const searchProduct = async(search=  '', res = response ) => {
             $or: [{name: regex},],
             //$and : [{state:true}] y que cumpla esta condicion, si son false no las trae
         }) // trae todos los que coincidan con el
+        .populate('category', 'name')
     
         res.json({
             ok: true,

@@ -51,11 +51,24 @@ const productNoExist = async(name) => {
 }
 
 
+const collectionsValids =(collection = '' , dbValidate = []) => {
+    console.log(collection, dbValidate);
+
+    const coleccion = dbValidate.includes(collection);
+    if(!coleccion){
+        throw new Error(`La coleccion ${collection} no esta incluida, ${dbValidate}`)
+    }
+
+    return true;
+}
+
+
 module.exports = {
     roleValidate,
     emailVerify,
     userVerify,
     categoryVerify,
     productVerify,
-    productNoExist
+    productNoExist,
+    collectionsValids
 }

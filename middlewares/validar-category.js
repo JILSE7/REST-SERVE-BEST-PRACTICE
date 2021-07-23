@@ -31,6 +31,9 @@ const validarCategory =async (req, res = response, next) =>  {
 };
 
 
+
+
+
 module.exports = {
     validarCategory
 }
